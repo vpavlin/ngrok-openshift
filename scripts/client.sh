@@ -13,7 +13,7 @@ if [ -z ${NGROK_PROXY_TO} ]; then
 fi
 
 CONFIG=""
-if [ -z ${NGROK_USE_DEFAULT} -o ${NGROK_USE_DEFAULT} == "false" -o ${NGROK_USE_DEFAULT} == "False" ]; then
+if [ -z ${NGROK_USE_DEFAULT} ] || [ ${NGROK_USE_DEFAULT} == "false" ] || [ ${NGROK_USE_DEFAULT} == "False" ]; then
   CONFIG=-config ngrok-config.yaml
 fi
 
