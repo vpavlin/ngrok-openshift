@@ -12,4 +12,9 @@ if [ -z ${NGROK_PROXY_TO} ]; then
   exit 1
 fi
 
-exec ngrok -config ngrok-config.yaml -subdomain ${NGROK_SUBDOMAIN} ${NGROK_PROXY_TO}
+CONFIG=""
+if [ -z ${NGROK_USE_DEFAULT} -o ${NGROK_USE_DEFAULT} == "false" -o ${NGROK_USE_DEFAULT} == "False" ]; then
+  CONFIG=-config ngrok-config.yaml
+fi
+
+exec ngrok ${CONFIG} -subdomain ${NGROK_SUBDOMAIN} ${NGROK_PROXY_TO}

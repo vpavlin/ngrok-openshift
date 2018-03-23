@@ -28,6 +28,8 @@ objects:
             value: ${NGROK_SUBDOMAIN}
           - name: NGROK_PROXY_TO
             value: ${NGROK_PROXY_TO}
+          - name: NGROK_USER_DEFAULT
+            value: ${NGROK_USE_DEFAULT}
           image: quay.io/vpavlin/ngrok-openshift:latest
           imagePullPolicy: Always
           name: ngrok-client-${NGROK_SUBDOMAIN}
@@ -62,3 +64,5 @@ parameters:
   value: ""
 - name: NGROK_PROXY_TO
   value: https://openshift.default.svc.cluster.local
+- name: NGROK_USE_DEFAULT
+  value: "true"
