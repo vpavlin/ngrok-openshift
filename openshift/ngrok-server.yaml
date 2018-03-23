@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: ngrok-server
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ngrok-server
+    name: ngrok-server
+  spec:
+    replicas: 1
+    selector:
+      app: ngrok-server
+      deploymentconfig: ngrok-server
+    template:
+      metadata:
+        labels:
+          app: ngrok-server
+          deploymentconfig: ngrok-server
+      spec:
+        containers:
+        - env:
+          - name: NGROK_RUN_AS
+            value: server
+          - name: NGROK_DOMAIN
+            value: ${NGROK_DOMAIN}
+          image: quay.io/vpavlin/ngrok-openshift:latest
+          imagePullPolicy: Always
+          name: ngrok-server
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ngrok-server
+    name: ngrok-server
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: ngrok-server
+      deploymentconfig: ngrok-server
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: ngrok-server
+    name: ngrok-server
+  spec:
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ngrok-server
+      weight: 100
+    wildcardPolicy: None
+parameters:
+- name: NGROK_DOMAIN
+  value: ngrok-vpavlin.8a09.starter-us-east-2.openshiftapps.com
